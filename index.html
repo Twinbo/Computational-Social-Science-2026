@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>US Airport Traffic & Security — Post 9/11 Analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a1208;
+      --paper: #f5f0e8;
+      --paper-dark: #ede6d6;
+      --accent: #8b1a1a;
+      --accent-light: #c0392b;
+      --gold: #b5892a;
+      --rule: #c8b99a;
+      --muted: #6b5d4f;
+      --highlight: #f0e6c8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 18px;
+      line-height: 1.75;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 3.5rem 2rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 60px,
+        rgba(255,255,255,0.025) 60px,
+        rgba(255,255,255,0.025) 61px
+      );
+      pointer-events: none;
+    }
+    header .kicker {
+      font-family: 'Source Serif 4', serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.2rem;
+    }
+    header h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 900;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      line-height: 1.18;
+      max-width: 820px;
+      margin: 0 auto 1.2rem;
+    }
+    header .subtitle {
+      font-style: italic;
+      color: rgba(245,240,232,0.65);
+      font-size: 1rem;
+      max-width: 620px;
+      margin: 0 auto;
+    }
+    .header-rule {
+      width: 80px;
+      height: 2px;
+      background: var(--gold);
+      margin: 1.6rem auto 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--paper-dark);
+      border-bottom: 1px solid var(--rule);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0 2rem;
+    }
+    nav ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      list-style: none;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    nav a {
+      display: block;
+      padding: 0.85rem 1.1rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    nav a:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* ── LAYOUT ── */
+    main { max-width: 820px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+
+    section { margin-bottom: 4rem; }
+
+    h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 0.3rem;
+      padding-top: 0.5rem;
+    }
+    h2::after {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 2px;
+      background: var(--accent);
+      margin-top: 0.5rem;
+      margin-bottom: 1.3rem;
+    }
+    h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.25rem;
+      font-style: italic;
+      color: var(--muted);
+      margin: 2rem 0 0.75rem;
+    }
+
+    p { margin-bottom: 1.1rem; }
+
+    /* ── INTRO BOX ── */
+    .intro-box {
+      background: var(--ink);
+      color: var(--paper);
+      border-left: 4px solid var(--gold);
+      padding: 1.8rem 2rem;
+      margin-bottom: 3rem;
+      border-radius: 0 4px 4px 0;
+    }
+    .intro-box p { margin-bottom: 0.6rem; color: rgba(245,240,232,0.9); font-size: 0.97rem; }
+    .intro-box p:last-child { margin-bottom: 0; }
+
+    /* ── FIGURES ── */
+    figure {
+      margin: 2rem 0;
+      background: white;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    figure img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    figcaption {
+      padding: 0.6rem 1rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-style: italic;
+      background: var(--paper-dark);
+      border-top: 1px solid var(--rule);
+    }
+
+    /* ── SIDE-BY-SIDE FIGURES ── */
+    .figure-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+      margin: 2rem 0;
+    }
+    .figure-row figure { margin: 0; }
+
+    /* ── TABLE ── */
+    .table-wrap { overflow-x: auto; margin: 2rem 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    th {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 0.65rem 0.9rem;
+      text-align: left;
+      font-family: 'Source Serif 4', serif;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+    td {
+      padding: 0.55rem 0.9rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    tr:nth-child(even) td { background: var(--paper-dark); }
+    tr:hover td { background: var(--highlight); }
+
+    /* ── MARKDOWN TABLE ── */
+    .md-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 1.5rem 0;
+    }
+    .md-table th {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 0.65rem 0.9rem;
+      text-align: left;
+    }
+    .md-table td {
+      padding: 0.55rem 0.9rem;
+      border-bottom: 1px solid var(--rule);
+      text-align: right;
+    }
+    .md-table td:first-child { text-align: left; }
+    .md-table tr:nth-child(even) td { background: var(--paper-dark); }
+
+    /* ── SOURCES ── */
+    .sources {
+      background: var(--highlight);
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      padding: 1.2rem 1.5rem;
+      margin-top: 2rem;
+    }
+    .sources h4 {
+      font-family: 'Source Serif 4', serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+    .sources ol {
+      padding-left: 1.2rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .sources li { margin-bottom: 0.3rem; }
+    .sources a { color: var(--accent); word-break: break-all; }
+    .sources a:hover { text-decoration: underline; }
+
+    /* ── DIVIDER ── */
+    .ornament {
+      text-align: center;
+      color: var(--rule);
+      font-size: 1.2rem;
+      letter-spacing: 0.5em;
+      margin: 3rem 0;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      color: rgba(245,240,232,0.5);
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.82rem;
+    }
+
+    @media (max-width: 600px) {
+      .figure-row { grid-template-columns: 1fr; }
+      nav ul { gap: 0; }
+      nav a { padding: 0.7rem 0.7rem; font-size: 0.7rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <p class="kicker">Data Analysis Project · US Aviation</p>
+  <h1>How did airport traffic and security evolve after 9/11, across 1988–2007 in the United States?</h1>
+  <p class="subtitle">A network science and text analysis study of American domestic aviation before and after the September 11, 2001 terrorist attacks.</p>
+  <div class="header-rule"></div>
+</header>
+
+<nav>
+  <ul>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#dataset">Dataset</a></li>
+    <li><a href="#graph-analysis">Graph Analysis</a></li>
+    <li><a href="#aviation-development">Aviation Development</a></li>
+    <li><a href="#text-analysis">Text Analysis</a></li>
+    <li><a href="#word-clouds">Word Clouds</a></li>
+    <li><a href="#security-terms">Security Terms</a></li>
+    <li><a href="#discussion">Discussion</a></li>
+    <li><a href="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- ── INTRODUCTION ── -->
+  <section id="introduction">
+    <h2>Introduction</h2>
+    <div class="intro-box">
+      <p>This project explores how airport traffic was affected by 9/11, and how airport routes evolved from the late 1980s to the early 2000s. The project also examines how different wording and topics evolved on individual airport Wikipedia pages over time.</p>
+      <p>The change in aviation security — in general and as a direct consequence of the terrorist attack — is especially interesting during this period, as major overhauls were carried out following the attack. The period covered by the text analysis is approximately 2003–2025, since Wikipedia was founded in 2001 and only gained substantial content a couple of years later. The Transportation Security Administration (TSA) was also created after the attack as a way to ensure proper security and rules for travel. These institutional changes are a direct result of the attack, which the data should also reflect alongside the development of flight numbers.</p>
+    </div>
+
+    <h3>Methodology overview</h3>
+    <p>To analyse the change in airport traffic before and after 9/11, a graph is constructed where all airports are represented as nodes and the flights connecting them are the edges. The edges are weighted by the number of flights on each route, making it possible to identify the most frequently visited airports and observe changes in traffic.</p>
+    <p>Security improvements in airports are analysed through textual analysis. Relevant Wikipedia airport pages for the United States were scraped and stored as documents. The text was then tokenised and the most frequently used words were identified using TF-IDF, visualised through word clouds.</p>
+
+    <div class="sources">
+      <h4>Sources</h4>
+      <ol>
+        <li><a href="https://www.tsa.gov/about/employee-stories/day-tsa-history-november-19-2001" target="_blank">TSA — A Day in TSA History: November 19, 2001</a></li>
+        <li><a href="https://www.gao.gov/products/gao-03-1150t" target="_blank">GAO Report GAO-03-1150T — Aviation Security</a></li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="ornament">✦ ✦ ✦</div>
+
+  <!-- ── DATASET ── -->
+  <section id="dataset">
+    <h2>US Airport Flight Dataset</h2>
+    <p>The airline dataset originates from RITA, a unit within the U.S. Department of Transportation (USDOT). RITA managed the Bureau of Transportation Statistics (BTS), which collected data on airline on-time performance, traffic, and finances. RITA was dissolved in 2015, but that was years after the dataset was created. The dataset was downloaded from <em>dataverse.harvard.edu</em> under the name "Data Expo 2009: Airline On-Time Data" from the American Statistical Association (ASA).</p>
+    <p>The airline dataset contains around 120 million flight records in total, occupying around 12 GB of storage space. Each flight row contains numerous features, including date, departure time, arrival time, carrier, flight number, arrival delay, departure delay, airtime, and cancellation status. More detailed descriptions of the features can be found on <em>dataverse.harvard.edu</em>.</p>
+
+    <p>The graph below shows that the total number of US domestic flights generally increased from 1988 to 2007. Flight numbers were fairly stable until the late 1990s, before increasing around 2000 and 2001. After 9/11, the number of flights dropped sharply in 2002 by nearly half a million, which is consistent with the major disruption to the aviation system caused by the terrorist attacks. Air traffic began to recover in 2003 and continued to grow strongly in the following years.</p>
+    <p>Cancelled flights were much more volatile than total flights. The graph shows a clear peak around 2001, where cancellations increased dramatically, likely due to the security measures and disruption caused by 9/11. In 2002, cancellations dropped sharply as the aviation system reopened, but they began to rise again as overall flight numbers increased. Diverted flights remained much lower than cancelled flights and were quite stable across the years.</p>
+    <p>Overall, the graph shows long-term growth in US domestic air traffic, but also significant fluctuations in cancellations. This means that even though some short-term comparisons may show improvements in airport performance, these improvements were not necessarily sustained across the full time period.</p>
+
+    <figure>
+      <img alt="US Domestic Flights 1988–2007" src="https://github.com/user-attachments/assets/b11416cc-4c07-410b-b04a-78f794675722" />
+      <figcaption>Figure: Trends in total, cancelled, and diverted US domestic flights from 1988 to 2007.</figcaption>
+    </figure>
+  </section>
+
+  <div class="ornament">✦ ✦ ✦</div>
+
+  <!-- ── GRAPH ANALYSIS ── -->
+  <section id="graph-analysis">
+    <h2>Graph Analysis — Around 9/11</h2>
+    <p>For a more detailed look, the flight records from one month before and the month of the terrorist attack are examined. Before analysing the changes, it is important to understand that the categories in the table are measured in different ways. Some variables are measured in minutes, such as average airtime, average departure delay, and average arrival delay. Average distance is measured in kilometres, while total flights, cancelled origin count, and diverted origin count are flight counts. The table should therefore be read by comparing each category between August and September, rather than comparing raw values across different categories.</p>
+
+    <p>The table provides a more detailed view of how air traffic changed from August 2001 to September 2001. The most noticeable change is the large increase in cancelled flights. Although total flights decreased by almost 10%, cancelled origin counts increased by more than 645%. This suggests that the September 11 attacks had a major and immediate impact on the airline system, with many planned flights being cancelled rather than delayed.</p>
+    <p>An interesting observation is that both average departure delay and average arrival delay decreased in September. At first glance, this might suggest improved flight performance. However, this result must be interpreted carefully. Since many flights were cancelled, they would not be included in the delay averages. Therefore, the lower delay values do not necessarily mean that airports operated more efficiently — rather, it may indicate that fewer delayed flights actually took place because many flights were removed from the schedule altogether.</p>
+    <p>The diverted origin count also decreased slightly, but this may be connected to the lower total number of flights in September. Since there were fewer flights overall, there were also fewer opportunities for diversions. Therefore, the decrease in diversions is less significant than the large increase in cancellations.</p>
+    <p>Overall, the table shows that September 2001 was not primarily characterised by longer delays, but by a sharp reduction in flights and a major increase in cancellations. This supports the conclusion that the terrorist attack caused a sudden disruption to US domestic air traffic.</p>
+    <p>This means that cancellation count is the most important indicator in this comparison, as it captures the disruption more clearly than average delay or diversion count.</p>
+
+    <div class="table-wrap">
+      <table>
+        <tr>
+          <th colspan="6" style="text-align:center;">Change from 2001 Pre 9/11 to 2001 Post 9/11</th>
+        </tr>
+        <tr>
+          <th>Compared Airports</th>
+          <th>Category</th>
+          <th>2001 Pre 9/11</th>
+          <th>2001 Post 9/11</th>
+          <th>Change</th>
+          <th>Interpretation</th>
+        </tr>
+        <tr>
+          <td rowspan="7">All airports appearing in both periods<br><strong>217 airports/nodes</strong></td>
+          <td><strong>Total Flights</strong></td>
+          <td>534,460</td>
+          <td>469,162</td>
+          <td>-65,298 (-12.22%)</td>
+          <td>Fewer total flights post-9/11 ↓</td>
+        </tr>
+        <tr>
+          <td><strong>Avg Airtime</strong></td>
+          <td>103.86</td>
+          <td>101.08</td>
+          <td>-2.78 (-2.68%)</td>
+          <td>Slight decrease ↓</td>
+        </tr>
+        <tr>
+          <td><strong>Avg Distance</strong></td>
+          <td>1,197.65</td>
+          <td>1,162.74</td>
+          <td>-34.90 (-2.91%)</td>
+          <td>Slight decrease ↓</td>
+        </tr>
+        <tr>
+          <td><strong>Avg Dep Delay</strong></td>
+          <td>8.82</td>
+          <td>5.85</td>
+          <td>-2.97 (-33.64%)</td>
+          <td>Departure delays decreased ↓</td>
+        </tr>
+        <tr>
+          <td><strong>Avg Arr Delay</strong></td>
+          <td>7.18</td>
+          <td>-0.07</td>
+          <td>-7.25 (-101.02%)</td>
+          <td>Arrival delays decreased strongly ↓</td>
+        </tr>
+        <tr>
+          <td><strong>Cancelled Origin Count</strong></td>
+          <td>12,694</td>
+          <td>98,681</td>
+          <td>+85,987 (+677.38%)</td>
+          <td>Far more cancellations ↑</td>
+        </tr>
+        <tr>
+          <td><strong>Diverted Origin Count</strong></td>
+          <td>1,402</td>
+          <td>1,205</td>
+          <td>-197 (-14.05%)</td>
+          <td>Fewer diversions ↓</td>
+        </tr>
+      </table>
+    </div>
+
+    <p>The cancelled flights network graph compares the airport network in August 2001 with September 2001. Each node represents an airport, and the lines between airports represent routes where cancelled flights occurred. The colour of the routes indicates how many cancelled flights occurred on that route, using a logarithmic scale — stronger or brighter routes indicate routes with significantly more cancellations.</p>
+    <p>The graph shows a clear difference between August and September. In August, the network had 204 airports and 1,060 weighted edges, with 13,318 cancelled flights. In September, the number of total flights decreased from 544,351 to 490,698, but cancellations increased sharply to 99,324, as shown in the table above. This means that even though fewer flights were operated in September, cancellations became far more common.</p>
+    <p>The September network is also visibly denser than the August network. There are more airports included in the cancellation network, increasing from 204 to 217, and the number of weighted edges increased from 1,060 to 1,582. This suggests that cancellations were not limited to a few airports or routes, but spread across a large part of the US domestic flight network.</p>
+    <p>Major airports such as LAX, DFW, ORD, ATL, DCA, LGA, and BOS are among the top 10 nodes in the network, with the highest number of cancelled flights. In September, many of these airports are connected by stronger and more visible cancellation routes, showing that large hubs were strongly affected. The graph therefore supports the conclusion that the disruption in September 2001 affected the national airport network broadly, rather than only isolated airports.</p>
+    <p>It is also important to note that average departure delay and average arrival delay decreased in September. However, as explained above, this does not necessarily mean that the system performed better. Since many flights were cancelled, they were excluded from the delay averages. Therefore, the most important finding in this graph is the large increase in cancellations and the wider spread of cancelled routes across the airport network.</p>
+
+    <figure>
+      <img alt="Pre vs Post 9/11 comparison network graph — Cancelled weighted edges" src="https://github.com/user-attachments/assets/b8a1e0ee-3c10-4dde-8dd3-3d80e7ff7ce7" />
+      <figcaption>Figure: Pre vs. post 9/11 comparison network graph — Cancelled weighted edges.</figcaption>
+    </figure>
+  </section>
+
+  <div class="ornament">✦ ✦ ✦</div>
+
+  <!-- ── AVIATION DEVELOPMENT ── -->
+  <section id="aviation-development">
+    <h2>General Aviation Development Graphs</h2>
+    <p>The graph below presents the dataset split into 5-year periods. The first and last years of the dataset are excluded as they were not complete years. For each period, total flights are summed along with all other features. Edges represent weighted flights between two airport IATA codes — for example, LAX to JFK forms one edge, with its colour determined by the weight on a logarithmic scale shown on each graph. A small statistics box is also attached to each period, with the most nodes appearing in the final period from 2003–2007.</p>
+    <p>Airports are split into communities using the Louvain algorithm, which clearly divides the nodes into their respective regions on the map. The top 5 communities were targeted, though for some periods Louvain produced fewer. In general, node communities are split into East, West, South, and Mid/North regions. The location of the top communities shifts from period to period, but where the communities are formed appears consistent across all periods.</p>
+
+    <p>From the first period (1988–1992) to the second period (1993–1997), the number of airports decreased from 260 to 234, and the number of weighted edges decreased from 2,491 to 2,107. This means the network had fewer airport-to-airport connections, even though total flights increased from approximately 25.7 million to 26.3 million. The same pattern continues in 1998–2002, where the number of airports remained lower than in the first period and weighted edges decreased further to 2,066, while total flights increased to approximately 27.8 million.</p>
+    <p>This suggests that the US domestic flight network became more concentrated. Airlines appear to have operated more flights on fewer routes, rather than spreading traffic across many different airport connections. Therefore, missing airports should not automatically be interpreted as permanent closures — it is more likely that some airports or routes became less active, while larger hub airports handled more traffic.</p>
+    <p>This development aligns with changes in US aviation following deregulation, where airlines increasingly organised their routes around hub-and-spoke systems. In this model, traffic is concentrated through major hub airports, while smaller airports may have fewer direct connections. The GAO also found that although many airports gained service after deregulation, some small- and medium-sized communities experienced decreases in service. Therefore, the decrease in airports and edges can be interpreted as a sign of network centralisation rather than an overall decline in air traffic.</p>
+
+    <figure>
+      <img alt="Aviation network development 1988–2007" src="https://github.com/user-attachments/assets/c7318640-0708-4758-92b5-7bf6a7bc600f" />
+      <figcaption>Figure: Aviation network development across 5-year periods, 1988–2007.</figcaption>
+    </figure>
+
+    <p>The table shows that the middle periods had fewer weighted edges but more flights per edge. This suggests that traffic became more concentrated, with more flights operated on fewer airport-to-airport connections. The highest cancellation rate was in 1998–2002, which is expected because this period includes 2001 and the disruption caused by 9/11. In the final period, 2003–2007, the network expanded strongly again, with more airports and route connections, while the cancellation rate decreased compared with 1998–2002.</p>
+
+    <div class="table-wrap">
+      <table class="md-table">
+        <tr>
+          <th>Period</th>
+          <th>Total Flights</th>
+          <th>Weighted Edges</th>
+          <th>Flights per Edge</th>
+          <th>Cancellations</th>
+          <th>Cancellation Rate</th>
+        </tr>
+        <tr><td>1988–1992</td><td>25.7 million</td><td>2,491</td><td>~10,300</td><td>273,127</td><td>~1.1%</td></tr>
+        <tr><td>1993–1997</td><td>26.3 million</td><td>2,107</td><td>~12,500</td><td>444,789</td><td>~1.7%</td></tr>
+        <tr><td>1998–2002</td><td>27.8 million</td><td>2,066</td><td>~13,500</td><td>782,651</td><td>~2.8%</td></tr>
+        <tr><td>2003–2007</td><td>35.4 million</td><td>3,949</td><td>~9,000</td><td>645,638</td><td>~1.8%</td></tr>
+      </table>
+    </div>
+
+    <div class="sources">
+      <h4>Sources</h4>
+      <ol>
+        <li><a href="https://www.gao.gov/products/t-rced-96-126" target="_blank">GAO Report T-RCED-96-126 — Airline Deregulation and Airport Service</a></li>
+        <li><a href="https://transportgeography.org/contents/chapter5/air-transport/hub-spoke-deregulation/" target="_blank">Transport Geography — Hub-and-Spoke Model and Deregulation</a></li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="ornament">✦ ✦ ✦</div>
+
+  <!-- ── TEXT ANALYSIS ── -->
+  <section id="text-analysis">
+    <h2>Text Analysis</h2>
+    <p>The text analysis investigates how the descriptive language used to describe airports in the United States has changed over time, particularly in relation to security, terrorism, TSA, screening, and 9/11. This analysis is based on historical Wikipedia text from US airport pages covering the period from 2003 to 2025. For each year, the pages were scraped and stored in documents for processing.</p>
+    <p>The reason the analysis starts from 2003 rather than 2001 or earlier — which would have been more informative about the immediate impact of 9/11 on the aviation system — is that Wikipedia was launched in 2001. In its first years, there was little to no text available on many airport pages. Before Wikipedia became widely used, information about airports was commonly found through newsletters, newspapers, television, radio, or official airport sources. Therefore, it was not possible to gather any meaningful text before 2003 on Wikipedia for comparison purposes.</p>
+    <p>This limitation of available text is important when interpreting the results. In 2003, only around 15,273 meaningful tokens were available, and this number has grown substantially over the years, as shown in the figure below. By 2025, the available token count had reached 905,719. One token represents one word, meaning the pool of meaningful words grew from approximately 15,000 to over 900,000.</p>
+
+    <figure>
+      <img alt="Increasing available tokens on Wikipedia" src="https://github.com/user-attachments/assets/a0983182-d58e-480d-a17b-feac7ab973ae" />
+      <figcaption>Figure: The increasing number of available tokens on Wikipedia airport pages over time.</figcaption>
+    </figure>
+
+    <p>Because of this growth in available text, later years naturally have a higher chance of containing specific words such as "security", "TSA", "screening", "terror", or "attack". An increase in these terms does not necessarily mean that airport security became proportionately more important over time — part of the increase may simply reflect the larger volume of text available in later years.</p>
+  </section>
+
+  <div class="ornament">✦ ✦ ✦</div>
+
+  <!-- ── WORD CLOUDS ── -->
+  <section id="word-clouds">
+    <h2>Word Cloud Visualisations</h2>
+    <p>The word clouds show the most important TF-IDF terms in the collected airport texts. TF-IDF highlights words that are relatively important for a document compared to the full collection of documents, making it useful for identifying words that characterise specific periods. The following word cloud visualisations show how language was used across the entire period from 2003 to 2025, followed by a comparison of the two sub-periods 2003–2014 and 2015–2025.</p>
+    <p>To produce these word cloud visualisations, extensive filtering was required. Generic words such as "airport", destination locations, and city names appeared frequently across all periods and were therefore removed, as they would not reveal how language changed between periods.</p>
+
+    <figure>
+      <img alt="TF-IDF word cloud for the whole period 2003–2025" src="https://github.com/user-attachments/assets/e3d3edf2-5b81-4bd4-a220-0020998e24fa" />
+      <figcaption>Figure: TF-IDF word cloud for the full period 2003–2025.</figcaption>
+    </figure>
+
+    <p>In the word cloud above, many of the largest words are related to airport descriptions and functionality, such as "administration", "federal", "united states", "general", and "runway". This suggests that much of the Wikipedia text describes the overall infrastructure, ownership, geographical location, and operational details of the aviation system.</p>
+    <p>The same pattern applies to the sub-periods 2003–2014 and 2015–2025, where airport administration and aviation operations are also the most frequent themes.</p>
+
+    <div class="figure-row">
+      <figure>
+        <img alt="TF-IDF word cloud for the period 2003–2014" src="https://github.com/user-attachments/assets/dddeeac2-2a3a-4b47-ab99-73c783a36591" />
+        <figcaption>Figure: TF-IDF word cloud for the period 2003–2014.</figcaption>
+      </figure>
+      <figure>
+        <img alt="TF-IDF word cloud for the period 2015–2025" src="https://github.com/user-attachments/assets/9b37120b-969a-45fb-8231-408e1cef8be0" />
+        <figcaption>Figure: TF-IDF word cloud for the period 2015–2025.</figcaption>
+      </figure>
+    </div>
+
+    <p>Comparing the two word clouds, the change in language used to describe airports and the aviation system is not dramatic. However, when comparing the full corpus (2003–2025) with the two individual periods (2003–2014 and 2015–2025), it becomes apparent that "security" is considerably more frequent in both sub-periods than in the combined corpus. This indicates that security in airports and the aviation industry has consistently been a priority, though not dominant enough to stand out in the full corpus alone.</p>
+    <p>In the earlier period (2003–2014), words such as "accident" and "safety" appear slightly more frequently than in the later period (2015–2025). This may indicate that the safety of aircraft was a more prominent topic in earlier years, and that there may have been more focus on accidents in that period. However, these interpretations must also be approached carefully. Because the later Wikipedia texts contain far more words overall, the relative frequency of terms like "safety" and "accident" in the earlier years may be partly explained by the more limited vocabulary range in that period, rather than a genuine increase in topic prominence.</p>
+  </section>
+
+  <div class="ornament">✦ ✦ ✦</div>
+
+  <!-- ── SECURITY TERMS ── -->
+  <section id="security-terms">
+    <h2>Development of Security-Related Terms</h2>
+    <p>The figure below shows the TF-IDF scores for selected security-related terms over time. The terms include: security, TSA, screening, terror, terrorism, attack, September Eleven, and safety. The term "9/11" was replaced with "September Eleven" in the underlying data processing to prevent it from being filtered out of the documents. These terms were chosen because they relate directly to airport security and the broader consequences of 9/11.</p>
+
+    <figure>
+      <img alt="Development of the term-specific TF-IDF scores over time" src="https://github.com/user-attachments/assets/c095d32b-a322-4922-964f-77a309c71973" />
+      <figcaption>Figure: Development of term-specific TF-IDF scores for selected security-related terms over time.</figcaption>
+    </figure>
+
+    <p>The results from the observation above must be interpreted carefully because the amount of available Wikipedia text increases strongly over time. As mentioned earlier, later years may contain more mentions of security-level words simply because the documents are longer and more detailed. The TF-IDF scores should therefore not be interpreted as direct evidence that airport security became more important over time, but rather as an indication of how the language on airport pages shifted its focus towards these specific words.</p>
+    <p>It can also be observed that the maximum TF-IDF score in the figure is around 0.02. This means that the selected security-related terms do not dominate the airport texts. In other words, even though terms such as "security", "safety", "TSA", and "screening" are relevant to the topic, Wikipedia airport pages remain primarily focused on general airport descriptions and infrastructure.</p>
+    <p>In the TF-IDF score figure, it can be observed that mentions of 9/11 were most frequent between 2003 and 2005, after which they have slightly declined, apart from a brief rise in the middle of the 2005–2010 period. This is not the only notable pattern — "attack" peaked around 2004 and 2010, indicating heightened concern about aviation security in those periods, but has since remained consistently low. Terms such as "security" and "safety" increased strongly around 2008–2011 and remain among the most prominent selected terms in later years, indicating that safety and security in the aviation industry continue to be considered important.</p>
+    <p>A surprising observation is that the term "TSA" does not appear at all. This is particularly noteworthy because TSA stands for Transportation Security Administration — an institution that is central to analysing the direct impact 9/11 had on the aviation system and airport security. The TSA was established and signed into law on 19 November 2001 in direct response to the attacks. Its mission is to prevent similar attacks in the future and to serve the interests of the United States. The TSA is responsible for screening passengers and baggage at airports in order to strengthen overall safety and security.</p>
+
+    <div class="sources">
+      <h4>Sources</h4>
+      <ol>
+        <li><a href="https://www.tsa.gov/history" target="_blank">TSA — History of the Transportation Security Administration</a></li>
+      </ol>
+    </div>
+
+    <p>One possible explanation for the absence of "TSA" is that individual Wikipedia pages often describe local airport infrastructure and historical developments, rather than national security agencies. Even though the TSA is important for airport and transportation security as a whole, it may not be mentioned directly on individual airport pages. This highlights an important limitation of the text analysis — Wikipedia airport pages may not fully capture broader institutional changes in aviation security after 9/11. Another possible explanation is related to the filtering of words, which could potentially cause "TSA" to be removed during preprocessing.</p>
+  </section>
+
+  <div class="ornament">✦ ✦ ✦</div>
+
+  <!-- ── DISCUSSION ── -->
+  <section id="discussion">
+    <h2>Discussion</h2>
+    <p>The analysis of both the network of US domestic flights and the textual history of airport Wikipedia pages reveals a complex story of disruption, adaptation, and long-term structural evolution in the aviation sector.</p>
+
+    <h3>The immediate vs. long-term impact of 9/11</h3>
+    <p>The immediate impact of the September 11 terrorist attacks is clearly visible in the flight network data from August to September 2001. The system responded with a massive surge in cancellations, effectively freezing the network. The network graph of cancellations demonstrates that this disruption was not isolated to the East Coast — it densely affected major hubs nationwide, including LAX, ORD, ATL, DFW, and others. Looking at a broader timeline from 1988 to 2007, the data shows remarkable resilience. By 2003, domestic flight volumes had recovered and continued to grow, showing that fear of terrorism did not permanently suppress the public's motivation to fly.</p>
+
+    <h3>Network topology and hub-and-spoke centralisation</h3>
+    <p>A major finding from the network analysis is the structural evolution of flight routes. Between the 1988–1992 period and the 1998–2002 period, the number of active airports and unique route connections (edges) decreased, yet the total number of flights increased. This observation is mathematically confirmed by the network's advanced metrics. The network exhibits negative assortativity (a disassortative network), meaning that highly connected major hubs predominantly connect to smaller regional airports, rather than smaller airports connecting to each other. Coupled with a consistently short average path length despite sparse edge density, these metrics demonstrate that the US aviation industry successfully transitioned into a highly optimised hub-and-spoke model. While 9/11 caused a massive temporary disruption, this long-term centralisation trend shows that operational efficiency and regional clustering — as confirmed by high Louvain modularity — were prioritised alongside new security measures.</p>
+
+    <h3>The textual evolution of airport security</h3>
+    <p>The text analysis provides insights into how the narrative and identity of airports changed alongside the physical network. A significant limitation to note is the dramatic growth of Wikipedia itself — as the platform matured, the sheer volume of available tokens grew from approximately 15,000 to 900,000 tokens. Despite this limitation, the TF-IDF analysis successfully highlights qualitative shifts in language. Interestingly, the hypothesis that post-9/11 security terms would completely dominate modern airport descriptions was not entirely supported by the data. As the word clouds illustrate, both the early (2003–2014) and later (2015–2025) periods remained heavily focused on basic physical infrastructure, administration, and geographical location, highlighted by terms like "runway", "terminal", and "federal". While terms like "safety" and "security" showed sustained importance in the timeline analysis, highly specific institutional terms like "TSA" were surprisingly absent. This absence reveals a fascinating dynamic: Wikipedia pages are locally focused. They describe the physical construction of terminals and runways rather than the national federal agencies operating within them. Furthermore, it highlights a classic NLP challenge, as crucial short-form acronyms like "TSA" can often be overshadowed by standard vocabulary or removed by data-filtering algorithms. Ultimately, the text data shows that while aviation safety remains a steady topic, the fundamental public description of an airport remains rooted in its physical infrastructure.</p>
+  </section>
+
+  <div class="ornament">✦ ✦ ✦</div>
+
+  <!-- ── CONCLUSION ── -->
+  <section id="conclusion">
+    <h2>Conclusion</h2>
+    <p>This project set out to explore how US airport traffic and security evolved around the crucial events of September 11, 2001. By combining network science with natural language processing, the analysis concludes that the aviation sector underwent a dual transformation — a mathematical optimisation of its physical routes and a fundamental shift in its operational identity.</p>
+    <p>The network data confirms that 9/11 caused an unprecedented and immediate halt to domestic travel, characterised by a massive, nationwide spike in flight cancellations. However, this disruption was temporary. The topological metrics — specifically the negative assortativity and short path lengths from 1998 to 2007 — demonstrate long-term structural consolidation into a highly efficient and resilient hub-and-spoke system.</p>
+    <p>Simultaneously, the text analysis of Wikipedia articles from 2003 to 2025 demonstrates how public documentation of these airports evolved. While the physical network recovered and optimised, the textual narrative remained heavily focused on physical infrastructure rather than national security policy. Although the direct institutional impacts of 9/11 — such as the creation of the TSA — reshaped the actual travel experience, local Wikipedia pages reflect a continued focus on geographical and operational facts. Ultimately, the data shows that while the US aviation network rapidly modernised its physical connections, the public identity of the airport remained firmly tied to its physical foundations.</p>
+  </section>
+
+</main>
+
+<footer>
+  <p>US Airport Traffic &amp; Security Analysis · Data sources: RITA / BTS, Wikipedia, TSA, GAO</p>
+</footer>
+
+</body>
+</html>
