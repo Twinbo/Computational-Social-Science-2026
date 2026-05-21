@@ -233,6 +233,10 @@
     .md-table td:first-child { text-align: left; }
     .md-table tr:nth-child(even) td { background: var(--paper-dark); }
 
+    /* ── CHANGE COLOURS ── */
+    .increase { color: #1a7a3a; font-weight: 600; }
+    .decrease { color: #9b1c1c; font-weight: 600; }
+
     /* ── SOURCES ── */
     .sources {
       background: var(--highlight);
@@ -378,50 +382,50 @@
           <td><strong>Total Flights</strong></td>
           <td>534,460</td>
           <td>469,162</td>
-          <td>-65,298 (-12.22%)</td>
-          <td>Fewer total flights post-9/11 ↓</td>
+          <td class="decrease">-65,298 (-12.22%)</td>
+          <td class="decrease">Fewer total flights post-9/11 ↓</td>
         </tr>
         <tr>
           <td><strong>Avg Airtime</strong></td>
           <td>103.86</td>
           <td>101.08</td>
-          <td>-2.78 (-2.68%)</td>
-          <td>Slight decrease ↓</td>
+          <td class="decrease">-2.78 (-2.68%)</td>
+          <td class="decrease">Slight decrease ↓</td>
         </tr>
         <tr>
           <td><strong>Avg Distance</strong></td>
           <td>1,197.65</td>
           <td>1,162.74</td>
-          <td>-34.90 (-2.91%)</td>
-          <td>Slight decrease ↓</td>
+          <td class="decrease">-34.90 (-2.91%)</td>
+          <td class="decrease">Slight decrease ↓</td>
         </tr>
         <tr>
           <td><strong>Avg Dep Delay</strong></td>
           <td>8.82</td>
           <td>5.85</td>
-          <td>-2.97 (-33.64%)</td>
-          <td>Departure delays decreased ↓</td>
+          <td class="decrease">-2.97 (-33.64%)</td>
+          <td class="decrease">Departure delays decreased ↓</td>
         </tr>
         <tr>
           <td><strong>Avg Arr Delay</strong></td>
           <td>7.18</td>
           <td>-0.07</td>
-          <td>-7.25 (-101.02%)</td>
-          <td>Arrival delays decreased strongly ↓</td>
+          <td class="decrease">-7.25 (-101.02%)</td>
+          <td class="decrease">Arrival delays decreased strongly ↓</td>
         </tr>
         <tr>
           <td><strong>Cancelled Origin Count</strong></td>
           <td>12,694</td>
           <td>98,681</td>
-          <td>+85,987 (+677.38%)</td>
-          <td>Far more cancellations ↑</td>
+          <td class="increase">+85,987 (+677.38%)</td>
+          <td class="increase">Far more cancellations ↑</td>
         </tr>
         <tr>
           <td><strong>Diverted Origin Count</strong></td>
           <td>1,402</td>
           <td>1,205</td>
-          <td>-197 (-14.05%)</td>
-          <td>Fewer diversions ↓</td>
+          <td class="decrease">-197 (-14.05%)</td>
+          <td class="decrease">Fewer diversions ↓</td>
         </tr>
       </table>
     </div>
@@ -468,9 +472,9 @@
           <th>Cancellation Rate</th>
         </tr>
         <tr><td>1988–1992</td><td>25.7 million</td><td>2,491</td><td>~10,300</td><td>273,127</td><td>~1.1%</td></tr>
-        <tr><td>1993–1997</td><td>26.3 million</td><td>2,107</td><td>~12,500</td><td>444,789</td><td>~1.7%</td></tr>
-        <tr><td>1998–2002</td><td>27.8 million</td><td>2,066</td><td>~13,500</td><td>782,651</td><td>~2.8%</td></tr>
-        <tr><td>2003–2007</td><td>35.4 million</td><td>3,949</td><td>~9,000</td><td>645,638</td><td>~1.8%</td></tr>
+        <tr><td>1993–1997</td><td>26.3 million</td><td>2,107</td><td>~12,500</td><td class="increase">444,789</td><td class="increase">~1.7% ↑</td></tr>
+        <tr><td>1998–2002</td><td>27.8 million</td><td>2,066</td><td>~13,500</td><td class="increase">782,651</td><td class="increase">~2.8% ↑</td></tr>
+        <tr><td>2003–2007</td><td>35.4 million</td><td>3,949</td><td>~9,000</td><td class="decrease">645,638</td><td class="decrease">~1.8% ↓</td></tr>
       </table>
     </div>
 
