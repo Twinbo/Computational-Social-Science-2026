@@ -1,7 +1,1 @@
-Final_project/Text/airport_tokens_lemmatized.csv
-Final_project/Text/airport_tokens_v2.csv
-Final_project/Text/MASTER_CORPUS_2001_2025.json
-Final_project/Text/*.json
-Final_project/Text/*.csv
-Final_project/Text/*.xlsx
-Final_project/Text/*.png
+.DS_Store
