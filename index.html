@@ -98,8 +98,9 @@
       flex-wrap: wrap;
       gap: 0;
       list-style: none;
-      max-width: 960px;
+      max-width: 1100px;
       margin: 0 auto;
+      align-items: center;
     }
     nav a {
       display: block;
@@ -113,6 +114,23 @@
       transition: color 0.2s, border-color 0.2s;
     }
     nav a:hover { color: var(--accent); border-color: var(--accent); }
+    nav .btn-download {
+      display: block;
+      margin: auto 0 auto auto;
+      padding: 0.45rem 1.1rem;
+      background: #4a7c9e;
+      color: var(--paper) !important;
+      border: none !important;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.2s;
+      align-self: center;
+    }
+    nav .btn-download:hover { background: #5a8faf; }
 
     /* ── LAYOUT ── */
     main { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem 5rem; }
@@ -307,7 +325,12 @@
     <li><a href="#security-terms">Security Terms</a></li>
     <li><a href="#discussion">Discussion</a></li>
     <li><a href="#conclusion">Conclusion</a></li>
-  </ul>
+    <li style="margin-left: auto;">
+      <a class="btn-download" href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/HG7NV7" target="_blank">⬇ Graph Dataset</a>
+    </li>
+    <li>
+      <a class="btn-download" href="YOUR_FILE_URL_HERE" download>⬇ Text Dataset</a>
+    </li>
 </nav>
 
 <main>
